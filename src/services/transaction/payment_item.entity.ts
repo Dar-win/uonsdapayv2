@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, OneToMany, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Transaction } from "./transaction.entity";
 
 @Entity()
@@ -11,4 +11,13 @@ export class PaymentItem{
 
     @OneToMany(()=> Transaction, transaction => transaction.payment_item)
     transactions: Transaction[];
+
+    @CreateDateColumn()
+    created_at: any;
+
+    @UpdateDateColumn()
+    updated_at: any;
+
+    @DeleteDateColumn()
+    deleted_at: any;
 }

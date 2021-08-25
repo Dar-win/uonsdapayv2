@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { PaymentItem } from "./payment_item.entity";
 import { User } from "../user/user.entity";
 import { QuickUser } from "../user/quick_user.entity";
@@ -8,7 +8,7 @@ export class Transaction{
     @PrimaryGeneratedColumn({type: "int", })
     transaction_id: number;
 
-    @ManyToOne(() => User, user => user.transactions, {nullable:true})
+    @ManyToOne(() => User, user => user.transactions)
     user: User;
 
     @ManyToOne(() => QuickUser, quickUser => quickUser.transactions, {nullable:true})
@@ -32,4 +32,13 @@ export class Transaction{
     @Column({type: "varchar", length: 50})
     transaction_date: string;
 
+
+    @CreateDateColumn()
+    created_at: any;
+
+    @UpdateDateColumn()
+    updated_at: any;
+
+    @DeleteDateColumn()
+    deleted_at: any;
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Campus } from "./campus.entity";
 import { Transaction } from "../transaction/transaction.entity";
 
@@ -32,5 +32,14 @@ export class User{
 
     @OneToMany(() => Transaction, transaction=>transaction.user)
     transactions: Transaction[];
+
+    @CreateDateColumn()
+    created_at: any;
+
+    @UpdateDateColumn()
+    updated_at: any;
+
+    @DeleteDateColumn()
+    deleted_at: any;
 
 }

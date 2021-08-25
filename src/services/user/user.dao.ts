@@ -6,6 +6,12 @@ import CreateUserDto from "./user.dto";
 export default class UserDao implements Dao{
 
     public async save(data: any) {
+        if(!data){
+            //throw missing params error
+            console.log("Missing parameters")
+            return
+        }
+
         const userRepository: Repository<User> = getConnection().getRepository(User);
         const newUser: User = data;
 
@@ -15,48 +21,84 @@ export default class UserDao implements Dao{
     }
 
     public async getOne(id: string){
-        const userRepository: Repository<User> = getConnection().getRepository(User);
-        const record = await userRepository.findOne(id);
+        if(!id){
+            //throw missing params error
+            console.log("Missing parameters")
+            return
+        }
 
-        if(record){
-            return record;
-        }else{
-            console.log("Record not found")
-            //throw record not found error
+        const userRepository: Repository<User> = getConnection().getRepository(User);
+        
+        try {
+            const record = await userRepository.findOne(id, {relations: ["campus"]});
+            if(record){
+                return record;
+            }else{
+                console.log("Record not found")
+                //throw record not found error
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 
     public async getAll(){
         const userRepository: Repository<User> = getConnection().getRepository(User);
-        const records = await userRepository.find();
-        return records;
+        try {
+            const records = await userRepository.find({relations: ["campus"]});
+            return records;
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     public async update(id: string, data:any){
-        const userRepository: Repository<User> = getConnection().getRepository(User);
-        const recordToUpdate = await userRepository.findOne(id);
-
-        if(recordToUpdate){
-            const savedData = userRepository.merge(new User(), recordToUpdate, data);
-            const updatedRecord = await userRepository.update(id, savedData)
-            return updatedRecord;
-        }else{
-            
-            console.log("Record not found")
-            return null;
-            //throw record not found exception
+        if(!data||!id){
+            //throw missing params error
+            console.log("Missing parameters")
+            return
         }
+        const userRepository: Repository<User> = getConnection().getRepository(User);
+
+        try {
+            const userToUpdate = await userRepository.findOne(id);
+
+            if(userToUpdate){
+                // const savedData = userRepository.merge(new User(), recordToUpdate, data);
+                const updatedUser = await userRepository.update(id, data)
+                return updatedUser;
+            }else{
+                
+                console.log("Record not found")
+                return null;
+                //throw record not found exception
+            }
+        } catch (error) {
+            
+        }
+        
 
     }
 
     public async delete(id: string){
-        const userRepository: Repository<User> = getConnection().getRepository(User);
-        const recordToDelete = await userRepository.findOne(id);
-
-        if(recordToDelete){
-            const deletedRecord = userRepository.softDelete(id);
-            return false;
+        if(!id){
+            //throw missing params error
+            console.log("Missing parameters")
+            return
         }
+        const userRepository: Repository<User> = getConnection().getRepository(User);
+
+        try {
+            const recordToDelete = await userRepository.findOne(id);
+
+            if(recordToDelete){
+                const deletedRecord = userRepository.softDelete(id);
+                return true;
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        
 
     }
 }

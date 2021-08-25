@@ -2,7 +2,7 @@ import { Request, Response, Router, NextFunction } from "express";
 import Controller from "../../interfaces/controller.interface";
 import UserDao from "./user.dao";
 
-class UserController implements Controller {
+export default class UserController implements Controller {
     path: string = '/users';
     router: Router = Router();
     private userDao: UserDao = new UserDao();
@@ -12,34 +12,60 @@ class UserController implements Controller {
     }
 
     private initializeRoutes():void{
-        this.router.get(`${this.path}`, this.getOne);
-        this.router.get(`${this.path}/:id`, this.getOne);
-        this.router.post(`${this.path}`, this.save);
-        this.router.put(`${this.path}/:id`, this.update)
-        this.router.delete(`${this.path}/:id`, this.delete)
+        this.router.route(this.path)
+            .get(this.getAll)
+            .post(this.save);
+        this.router.route(`${this.path}/:userId`)
+            .get(this.getOne)
+            .patch(this.update)
+            .delete(this.delete)
 
     }
 
-    private async save(request: Request, response: Response, next: NextFunction) {
-        const newUser = request.body;
-        const savedUser = await this.userDao.save(newUser);
-        response.send(savedUser)
-        // uerDao.save(newUser)
+    private save = async (request: Request, response: Response, next: NextFunction) => {
+        try {
+            const newUser = request.body;
+            const savedUser = await this.userDao.save(newUser);
+            response.send(savedUser)
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
 
-    private getOne(request: Request, response: Response, next: NextFunction) :void {
-
+    private getOne = async(request: Request, response: Response, next: NextFunction)  => {
+        try {
+            const user = await this.userDao.getOne(request.params.userId)
+            response.send(user)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    private getAll(request: Request, response: Response, next: NextFunction):void{
-
+    private getAll = async(request: Request, response: Response, next: NextFunction) =>{
+        try {
+            const users = await this.userDao.getAll();
+            response.send(users)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    private update(request: Request, response: Response, next: NextFunction): void{
-
+    private update = async(request: Request, response: Response, next: NextFunction) => {
+        try {
+            const updatedUser = await this.userDao.update(request.params.userId, request.body)
+            response.send(updatedUser)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    private delete(request: Request, response: Response, next: NextFunction): void{
-
+    private delete = async(request: Request, response: Response, next: NextFunction) => {
+        try {
+            const isDeleted = await this.userDao.delete(request.params.userId)
+            response.send(isDeleted)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

@@ -34,6 +34,7 @@ export default class CampusDao implements Dao {
                 return campus;
             }else{
                 //throw missing records
+                // response.json({"message": "Missing record with id: "+id})
                 console.log("Missing record with id: "+id)
             }
         } catch (error) {
@@ -60,9 +61,8 @@ export default class CampusDao implements Dao {
         try {
             const campusToUpdate = await campusRepository.findOne(id);
             if (campusToUpdate){
-                const updatedCampus = campusRepository.merge(new Campus(), campusToUpdate, data)
-                const upToDateCampus = campusRepository.update(id, updatedCampus)
-                return upToDateCampus;
+                const updatedCampus = campusRepository.update(id, data)
+                return updatedCampus;
             }else{
                 //throw missing record
                 console.log("Missing record")
