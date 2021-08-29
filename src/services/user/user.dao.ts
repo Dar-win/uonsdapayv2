@@ -30,7 +30,7 @@ export default class UserDao implements Dao{
         const userRepository: Repository<User> = getConnection().getRepository(User);
         
         try {
-            const record = await userRepository.findOne(id, {relations: ["campus"]});
+            const record = await userRepository.findOne(id, {relations: ["campus", "pledges"]});
             if(record){
                 return record;
             }else{
@@ -45,7 +45,7 @@ export default class UserDao implements Dao{
     public async getAll(){
         const userRepository: Repository<User> = getConnection().getRepository(User);
         try {
-            const records = await userRepository.find({relations: ["campus"]});
+            const records = await userRepository.find({relations: ["campus", "pledges"]});
             return records;
         } catch (error) {
             console.log(error)

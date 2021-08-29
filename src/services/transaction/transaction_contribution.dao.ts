@@ -1,9 +1,9 @@
 import Dao from "../../interfaces/dao.interface";
 import { getConnection, getRepository } from "typeorm";
-import { Transaction } from "./transaction.entity";
+import { ContributionTransaction } from "./transaction_contribution.entity";
 import { QuickUser } from "../user/quick_user.entity";
 
-export default class TransactionDao implements Dao{
+export default class ContributionTransactionDao implements Dao{
 
     public save = async(data: any): Promise<any> => {
         if(!data){
@@ -11,11 +11,11 @@ export default class TransactionDao implements Dao{
             console.log("Missing parameters")
             return
         }
-        const transactionRepository = getConnection().getRepository(Transaction)
+        const contributionTransactionRepository = getConnection().getRepository(ContributionTransaction)
         try {
-            const dataToSave: Transaction = data;
-            const savedTransaction = await transactionRepository.save(dataToSave)
-            return savedTransaction;
+            const dataToSave: ContributionTransaction = data;
+            const savedContributionTransaction = await contributionTransactionRepository.save(dataToSave)
+            return savedContributionTransaction;
         } catch (error) {
             console.log(error)
         }
@@ -27,11 +27,11 @@ export default class TransactionDao implements Dao{
             console.log("Missing parameters")
             return
         }
-        const transactionRepository = getConnection().getRepository(Transaction);
+        const contributionTransactionRepository = getConnection().getRepository(ContributionTransaction);
         try {
-            const transaction = await transactionRepository.findOne(id, {relations:["user", "quickUser", "payment_item"]})
-            if(transaction){
-                return transaction;
+            const contributionTransaction = await contributionTransactionRepository.findOne(id, {relations:["user", "quickUser", "contribution_item"]})
+            if(contributionTransaction){
+                return contributionTransaction;
             }else{
                 //throw missing record error
                 console.log("Missing record")
@@ -42,9 +42,9 @@ export default class TransactionDao implements Dao{
     }
 
     public getAll = async(): Promise<any> => {
-        const transactionRepository = getConnection().getRepository(Transaction);
+        const contributionTransactionRepository = getConnection().getRepository(ContributionTransaction);
         try {
-            return await transactionRepository.find({relations:["user", "quickUser", "payment_item"]})
+            return await contributionTransactionRepository.find({relations:["user", "quickUser", "payment_item"]})
         } catch (error) {
             console.log(error)    
         }
@@ -61,11 +61,11 @@ export default class TransactionDao implements Dao{
             return
         }
 
-        const transactionRepository = getConnection().getRepository(Transaction);
+        const contributionTransactionRepository = getConnection().getRepository(ContributionTransaction);
         try {
-            const transactionToDelete = await transactionRepository.findOne(id);
-            if(transactionToDelete){
-                await transactionRepository.softDelete(id);
+            const contributionTransactionToDelete = await contributionTransactionRepository.findOne(id);
+            if(contributionTransactionToDelete){
+                await contributionTransactionRepository.softDelete(id);
                 return true;
             }else{
                 return false

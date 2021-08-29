@@ -1,12 +1,12 @@
 import Controller from "../../interfaces/controller.interface";
 import { Request, Response, NextFunction, Router, request } from "express";
-import PaymentTransactionDao from "./transaction_payment.dao";
+import ContributionDao from './contribution.dao'
 
-export default class TransactionController implements Controller{
-    path: string = '/transactions'
+export default class ContributionController implements Controller{
+    path: string = '/contributions'
     router: Router = Router();
 
-    private paymentTransactionDao: PaymentTransactionDao = new PaymentTransactionDao();
+    private contributionDao: ContributionDao = new ContributionDao();
 
     constructor(){
         this.initializeRoutes()
@@ -16,15 +16,16 @@ export default class TransactionController implements Controller{
         this.router.route(this.path)
             .get(this.getAll)
             .post(this.save);
-        this.router.route(`${this.path}/:paymentTransactionId`)
+        this.router.route(`${this.path}/:contributionId`)
             .get(this.getOne)
+            .patch(this.update)
             .delete(this.delete)
     }
 
     private save = async(request:Request, response: Response, next:NextFunction) => {
         try {
-            const savedTransaction = await this.paymentTransactionDao.save(request.body);
-            response.send(savedTransaction);
+            const savedContribution = await this.contributionDao.save(request.body);
+            response.send(savedContribution);
         } catch (error) {
             console.log(error)
         }
@@ -32,8 +33,8 @@ export default class TransactionController implements Controller{
 
     private getOne = async(request: Request, response: Response, next: NextFunction) => {
         try {
-            const paymentTransaction = await this.paymentTransactionDao.getOne(request.params.transactionId)
-            response.send(paymentTransaction)
+            const contribution = await this.contributionDao.getOne(request.params.contributionId)
+            response.send(contribution)
         } catch (error) {
             console.log(error)
         }
@@ -41,8 +42,17 @@ export default class TransactionController implements Controller{
 
     private getAll = async (request:Request, response: Response, next: NextFunction) => {
         try {
-            const paymentTransactions = await this.paymentTransactionDao.getAll();
-            response.send(paymentTransactions)
+            const contributions = await this.contributionDao.getAll();
+            response.send(contributions)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    private update = async (request:Request, response: Response, next: NextFunction) => {
+        try {
+            const updatedItem = await this.contributionDao.update(request.params.contributionId, request.body)
+            response.send(updatedItem)
         } catch (error) {
             console.log(error)
         }
@@ -50,7 +60,7 @@ export default class TransactionController implements Controller{
 
     private delete = async (request: Request, response:Response, next:NextFunction) => {
         try {
-            const isDeleted = await this.paymentTransactionDao.delete(request.params.transactionId)
+            const isDeleted = await this.contributionDao.delete(request.params.contributionId)
             response.send(isDeleted)
         } catch (error) {
             console.log(error)

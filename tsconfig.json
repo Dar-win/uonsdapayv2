@@ -8,8 +8,8 @@
       "declaration": true,
       "sourceMap": true,
       "module": "commonjs",
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true, //for type-graphql
+      "emitDecoratorMetadata": true, //for type-graphql
       "outDir": "dist/",
       "target": "es2018",
       "lib": [

@@ -1,19 +1,19 @@
 import { getConnection } from "typeorm";
 import Dao from "../../interfaces/dao.interface";
-import { PaymentItem } from "./payment_item.entity";
+import { Pledge } from "./pledge.entity";
 
-export default class PaymentItemDao implements Dao{
+export default class PledgeDao implements Dao{
     public save = async(data: any): Promise<any> => {
         if(!data){
             //throw missing params error
             console.log("Missing parameters")
             return
         }
-        const paymentItemRepository = getConnection().getRepository(PaymentItem)
+        const pledgeRepository = getConnection().getRepository(Pledge)
         try {
-            const dataToSave: PaymentItem = data;
-            const savedPaymentItem = await paymentItemRepository.save(dataToSave)
-            return savedPaymentItem;
+            const dataToSave: Pledge = data;
+            const savedPledge = await pledgeRepository.save(dataToSave)
+            return savedPledge;
         } catch (error) {
             console.log(error)
         }
@@ -25,11 +25,11 @@ export default class PaymentItemDao implements Dao{
             console.log("Missing parameters")
             return
         }
-        const paymentItemRepository = getConnection().getRepository(PaymentItem);
+        const pledgeRepository = getConnection().getRepository(Pledge);
         try {
-            const paymentItem = await paymentItemRepository.findOne(id, {relations: ["contributions"]})
-            if(paymentItem){
-                return paymentItem;
+            const pledge = await pledgeRepository.findOne(id, {relations: ["user", "contribution"]})
+            if(pledge){
+                return pledge;
             }else{
                 //throw missing record error
                 console.log("Missing record")
@@ -40,9 +40,9 @@ export default class PaymentItemDao implements Dao{
     }
 
     public getAll = async(): Promise<any> => {
-        const paymentItemRepository = getConnection().getRepository(PaymentItem);
+        const pledgeRepository = getConnection().getRepository(Pledge);
         try {
-            return await paymentItemRepository.find({relations: ["contributions"]})
+            return await pledgeRepository.find({relations: ["user", "contribution"]})
         } catch (error) {
             console.log(error)    
         }
@@ -55,11 +55,11 @@ export default class PaymentItemDao implements Dao{
             return
         }
 
-        const paymentItemRepository = getConnection().getRepository(PaymentItem);
+        const pledgeRepository = getConnection().getRepository(Pledge);
         try {
-            const itemToUpdate = await paymentItemRepository.findOne(id)
+            const itemToUpdate = await pledgeRepository.findOne(id)
             if(itemToUpdate){
-                return await paymentItemRepository.update(id, data)
+                return await pledgeRepository.update(id, data)
             }else{
                 return "Missing records"
                 console.log("missing record")
@@ -75,11 +75,11 @@ export default class PaymentItemDao implements Dao{
             return
         }
 
-        const paymentItemRepository = getConnection().getRepository(PaymentItem);
+        const pledgeRepository = getConnection().getRepository(Pledge);
         try {
-            const itemToDelete = await paymentItemRepository.findOne(id);
+            const itemToDelete = await pledgeRepository.findOne(id);
             if(itemToDelete){
-                await paymentItemRepository.softDelete(id);
+                await pledgeRepository.softDelete(id);
                 return true;
             }else{
                 return false

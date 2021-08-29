@@ -1,10 +1,10 @@
 import express from 'express';
 import morgan from 'morgan'
+import {createConnection} from "typeorm";
+import "reflect-metadata";
 import "./config"; 
 import database from "./config/database";
-import {createConnection} from "typeorm";
 import controllers from "./services"
-import CampusController from './services/user/campus.controller';
 
 const app:express.Application = express();
 

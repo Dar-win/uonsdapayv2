@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Transaction } from "../transaction/transaction.entity";
+import { PaymentTransaction } from "../transaction/transaction_payment.entity";
+import { ContributionTransaction } from "../transaction/transaction_contribution.entity";
 
 @Entity()
 export class QuickUser{
@@ -21,7 +22,10 @@ export class QuickUser{
     @DeleteDateColumn()
     deleted_at: any;
 
-    @OneToMany(() => Transaction, transaction=>transaction.user)
-    transactions: Transaction[];
+    @OneToMany(() => PaymentTransaction, paymentTransaction=>paymentTransaction.user)
+    payment_transactions: PaymentTransaction[];
+
+    @OneToMany(() => ContributionTransaction, contributionTransaction=>contributionTransaction.user)
+    contribution_transactions: ContributionTransaction[];
 
 }
