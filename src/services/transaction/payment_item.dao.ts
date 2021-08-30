@@ -27,7 +27,7 @@ export default class PaymentItemDao implements Dao{
         }
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
         try {
-            const paymentItem = await paymentItemRepository.findOne(id, {relations: ["contributions"]})
+            const paymentItem = await paymentItemRepository.findOne(id, {relations: ["transactions"]})
             if(paymentItem){
                 return paymentItem;
             }else{
@@ -42,7 +42,7 @@ export default class PaymentItemDao implements Dao{
     public getAll = async(): Promise<any> => {
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
         try {
-            return await paymentItemRepository.find({relations: ["contributions"]})
+            return await paymentItemRepository.find({relations: ["transactions"]})
         } catch (error) {
             console.log(error)    
         }

@@ -1,24 +1,22 @@
 import {IsAlpha, IsDefined, IsEmail} from 'class-validator'
+import { Campus } from './campus.entity';
+import { User } from './user.entity';
 
-export default class CreateUserDto{
+export default class CreateUserDto implements Partial<User>{
 
-    @IsAlpha()
-    @IsDefined()
-    public firstName: string;
 
-    @IsAlpha()
-    @IsDefined()
-    public lastName: string;
+    first_name?: string;
 
-    @IsEmail()
-    @IsDefined()
-    public emailAddress: string;
+    last_name?: string;
 
-    public phoneNumber: string;
+    email_address?: string;
 
-    public isMember: boolean;
+    phone_number?: string;
 
-    public localChurch: string;
+    is_member?: boolean;
 
+    campus?: Campus
+
+    local_church?: string
 
 }

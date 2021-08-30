@@ -29,7 +29,7 @@ export default class CampusDao implements Dao {
 
         const campusRepository = getConnection().getRepository(Campus);
         try {
-            const campus = await campusRepository.findOne(id);
+            const campus = await campusRepository.findOne(id, {relations:['contributions']});
             if(campus){
                 return campus;
             }else{
@@ -45,7 +45,7 @@ export default class CampusDao implements Dao {
     public getAll = async (): Promise<any> => {
         const campusRepository = getConnection().getRepository(Campus);
         try {
-            const campuses = await campusRepository.find();
+            const campuses = await campusRepository.find({relations:['contributions']});
             return campuses;
         } catch (error) {
             console.log(error)

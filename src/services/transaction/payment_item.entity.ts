@@ -1,33 +1,29 @@
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Contribution } from "./contribution.entity";
 import { PaymentTransaction } from "./transaction_payment.entity";
+import { ObjectType, ID, Field } from "type-graphql";
 
+@ObjectType()
 @Entity()
 export class PaymentItem{
+    @Field(()=>ID)
     @PrimaryGeneratedColumn({type:"int"})
     item_id: number;
 
+    @Field()
     @Column({type: "varchar", length: 100})
     item_name: string;
 
-    @Column({type: "boolean", default: false})
-    is_contribution: boolean;
-
-    @Column({type: "varchar", length: 20, default: "open"})
-    status: string;
-
+    @Field(()=>[PaymentTransaction], { nullable: true })
     @OneToMany(()=> PaymentTransaction, paymentTransaction => paymentTransaction.payment_item)
     transactions: PaymentTransaction[];
 
-    @OneToMany(()=>Contribution, contribution => contribution.paymentItem)
-    contributions: Contribution[]
-
     @CreateDateColumn()
-    created_at: any;
+    created_at?: any;
 
     @UpdateDateColumn()
-    updated_at: any;
+    updated_at?: any;
 
     @DeleteDateColumn()
-    deleted_at: any;
+    deleted_at?: any;
 }
