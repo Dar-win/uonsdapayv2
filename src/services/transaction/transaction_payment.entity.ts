@@ -43,7 +43,6 @@ export class PaymentTransaction{
     @Column({type: "varchar", length: 50})
     transaction_date: string;
 
-
     @CreateDateColumn()
     created_at?: any;
 

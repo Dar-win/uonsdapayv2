@@ -1,24 +1,18 @@
 import { Arg, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from "type-graphql";
-import { getRepository, Transaction } from "typeorm";
-import PledgeDao from "../transaction/pledge.dao";
 import { Pledge } from "../transaction/pledge.entity";
 import { ContributionTransaction } from "../transaction/transaction_contribution.entity";
 import { PaymentTransaction } from "../transaction/transaction_payment.entity";
 import { Campus } from "./campus.entity";
 import UserDao from "./user.dao";
 import { User } from "./user.entity";
+import {CreateUserDto} from "./user.dto"
+import { UpdateUserDto } from "./user.update.dto";
 
 @Resolver(of => User)
 export class UserResolver implements ResolverInterface<User>{
 
     private userDao: UserDao = new UserDao();
-    private pledgeDao: PledgeDao = new PledgeDao();
-    private pledgeRepository = getRepository(Pledge);
-    private userRepository = getRepository(User)
-    private campusRepository = getRepository(Campus)
-    private paymentTransactionRepository = getRepository(PaymentTransaction)
-    private contributionTransactionRepository = getRepository(ContributionTransaction)
-
+    
     @Query(returns => User)
     async getUser (@Arg('id') id:string):Promise<User | Error> {
         try {
@@ -39,6 +33,35 @@ export class UserResolver implements ResolverInterface<User>{
         }
     }
 
+    @Mutation(returns => User)
+    async saveUser(@Arg('user') user: CreateUserDto): Promise<User | Error>{
+        try {
+            const createdUser = await this.userDao.save(user)
+            return createdUser;
+        } catch (error) {
+            return error
+        }
+    }
+
+    @Mutation(returns => User)
+    async updateUser(@Arg('id') id: string, @Arg('userData') data: UpdateUserDto): Promise<any>{
+        try {
+            const updatedUser = await this.userDao.update(id, data);
+            return updatedUser
+        } catch (error) {
+            return error
+        }
+    }
+
+    @Mutation(returns=> Boolean)
+    async deleteUser(@Arg('id') id: string){
+        try {
+            return await this.userDao.delete(id)
+        } catch (error) {
+            return error;
+        }
+    }
+
     @FieldResolver(returns => [PaymentTransaction])
     async payment_transactions(@Root() user:User): Promise<PaymentTransaction[]> {
         try {
@@ -49,7 +72,7 @@ export class UserResolver implements ResolverInterface<User>{
         }
     }
 
-    @FieldResolver(returns => [PaymentTransaction])
+    @FieldResolver(returns => [ContributionTransaction])
     async contribution_transactions(@Root() user:User): Promise<ContributionTransaction[]> {
         try {
             // const transactions = await this.contributionTransactionRepository.find({user})

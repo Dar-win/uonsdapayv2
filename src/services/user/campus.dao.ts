@@ -29,7 +29,7 @@ export default class CampusDao implements Dao {
 
         const campusRepository = getConnection().getRepository(Campus);
         try {
-            const campus = await campusRepository.findOne(id, {relations:['contributions']});
+            const campus = await campusRepository.findOne(id, {relations:['contributions', 'users']});
             if(campus){
                 return campus;
             }else{
@@ -45,7 +45,7 @@ export default class CampusDao implements Dao {
     public getAll = async (): Promise<any> => {
         const campusRepository = getConnection().getRepository(Campus);
         try {
-            const campuses = await campusRepository.find({relations:['contributions']});
+            const campuses = await campusRepository.find({relations:['contributions', 'users']});
             return campuses;
         } catch (error) {
             console.log(error)
@@ -61,8 +61,10 @@ export default class CampusDao implements Dao {
         try {
             const campusToUpdate = await campusRepository.findOne(id);
             if (campusToUpdate){
-                const updatedCampus = campusRepository.update(id, data)
-                return updatedCampus;
+                const updatedCampus = await campusRepository.update(id, data)
+                const campus = await campusRepository.findOne(id, {relations:['contributions', 'users']})
+                console.log(campus)
+                return campus
             }else{
                 //throw missing record
                 console.log("Missing record")

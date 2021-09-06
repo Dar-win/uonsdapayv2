@@ -1,5 +1,4 @@
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany, DeleteDateColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { Contribution } from "./contribution.entity";
 import { PaymentTransaction } from "./transaction_payment.entity";
 import { ObjectType, ID, Field } from "type-graphql";
 

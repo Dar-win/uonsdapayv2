@@ -59,7 +59,9 @@ export default class PaymentItemDao implements Dao{
         try {
             const itemToUpdate = await paymentItemRepository.findOne(id)
             if(itemToUpdate){
-                return await paymentItemRepository.update(id, data)
+                const item = await paymentItemRepository.update(id, data)
+                const updatedPaymentItem = await paymentItemRepository.findOne(id, {relations: ["transactions"]})
+                return updatedPaymentItem
             }else{
                 return "Missing records"
                 console.log("missing record")

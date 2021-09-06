@@ -5,10 +5,10 @@ import { Field, InputType, ID } from "type-graphql";
 import { CampusDto } from './campus.dto';
 
 @InputType()
-export class CreateUserDto implements Partial<User>{
+export class UpdateUserDto implements Partial<User>{
 
     @Field(type => ID, {nullable: true})
-    user_id?: number;
+    user_id: number;
 
     @Field({nullable:true})
     first_name?: string;
@@ -30,6 +30,5 @@ export class CreateUserDto implements Partial<User>{
 
     @Field({nullable:true})
     local_church?: string
-
 
 }

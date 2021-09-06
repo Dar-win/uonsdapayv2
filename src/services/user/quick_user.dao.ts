@@ -1,20 +1,19 @@
 import { getConnection, Repository } from "typeorm";
 import Dao from "../../interfaces/dao.interface";
-import { User } from "./user.entity";
+import { QuickUser } from "./quick_user.entity";
 
-export default class UserDao implements Dao{
-
+export class QuickUserDao implements Dao{
+    
     public async save(data: any) {
         if(!data){
             //throw missing params error
             console.log("Missing parameters")
             return
         }
+        const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
+        const newQuickUser: QuickUser = data;
 
-        const userRepository: Repository<User> = getConnection().getRepository(User);
-        const newUser: User = data;
-
-        const savedData: User = await userRepository.save(newUser)
+        const savedData: QuickUser = await userRepository.save(newQuickUser)
 
         return savedData;
     }
@@ -26,10 +25,10 @@ export default class UserDao implements Dao{
             return
         }
 
-        const userRepository: Repository<User> = getConnection().getRepository(User);
+        const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
         
         try {
-            const record = await userRepository.findOne(id, {relations: ["campus", "pledges", "payment_transactions", "contribution_transactions.contribution"]});
+            const record = await userRepository.findOne(id, {relations: ["contribution_transactions", "payment_transactions"]});
             if(record){
                 return record;
             }else{
@@ -42,9 +41,9 @@ export default class UserDao implements Dao{
     }
 
     public async getAll(){
-        const userRepository: Repository<User> = getConnection().getRepository(User);
+        const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
         try {
-            const records = await userRepository.find({relations: ["campus", "pledges", "payment_transactions", "contribution_transactions.contribution"]});
+            const records = await userRepository.find({relations: ["campus", "pledges"]});
             console.log(records)
             return records;
         } catch (error) {
@@ -58,15 +57,16 @@ export default class UserDao implements Dao{
             console.log("Missing parameters")
             return
         }
-        const userRepository: Repository<User> = getConnection().getRepository(User);
+        const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
 
         try {
             const userToUpdate = await userRepository.findOne(id);
 
             if(userToUpdate){
-                // const savedData = userRepository.merge(new User(), recordToUpdate, data);
-                const updatedUser = await userRepository.update(id, data)
-                const user = await userRepository.findOne(id, {relations: ["campus", "pledges", "payment_transactions", "contribution_transactions.contribution"]})
+                // const savedData = userRepository.merge(new QuickUser(), recordToUpdate, data);
+                const updatedQuickUser = await userRepository.update(id, data)
+                const user = await userRepository.findOne(id, {relations: ["contribution_transactions", "payment_transactions"]});
+                console.log(user)
                 return user;
             }else{
                 
@@ -86,7 +86,7 @@ export default class UserDao implements Dao{
             console.log("Missing parameters")
             return
         }
-        const userRepository: Repository<User> = getConnection().getRepository(User);
+        const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
 
         try {
             const recordToDelete = await userRepository.findOne(id);

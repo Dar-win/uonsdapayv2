@@ -19,7 +19,7 @@ export class Contribution{
     campuses: Campus[]
 
     @Field()
-    @Column({type: "varchar", length:50})
+    @Column({type: "varchar", length:150})
     contribution_name: string;
 
     @Column({type: "varchar", length: 20, default: "open"})

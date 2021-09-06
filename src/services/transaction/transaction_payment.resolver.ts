@@ -1,12 +1,10 @@
 import { Arg, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from "type-graphql";
-import { getRepository, Transaction } from "typeorm";
 import { QuickUser } from "../user/quick_user.entity";
 import { User } from "../user/user.entity";
-import { Contribution } from "./contribution.entity";
 import { PaymentItem } from "./payment_item.entity";
-import ContributionTransactionDao from "./transaction_contribution.dao";
 import PaymentTransactionDao from "./transaction_payment.dao";
 import { PaymentTransaction } from "./transaction_payment.entity";
+import { PaymentTransactionDto } from "./transaction_payment.dto";
 
 @Resolver(of => PaymentTransaction)
 export class PaymentTransactionResolver implements ResolverInterface<PaymentTransaction>{
@@ -30,6 +28,36 @@ export class PaymentTransactionResolver implements ResolverInterface<PaymentTran
             return paymentTransactions;
         } catch (error) {
             return error
+        }
+    }
+
+    @Mutation(returns => PaymentTransaction)
+    async savePaymentTransaction(@Arg('paymentTransaction') paymentTransaction:PaymentTransactionDto):Promise<any>  {
+        try {
+            const savedPaymentTransaction = await this.paymentTransactionDao.save(paymentTransaction);
+            return savedPaymentTransaction;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Mutation(returns => PaymentTransaction)
+    async updatePaymentTransaction(@Arg('id') id: string, @Arg('data') paymentTransaction: PaymentTransactionDto): Promise<any> {
+        try {
+            const updatedPaymentTransaction = await this.paymentTransactionDao.update(id, paymentTransaction)
+            return updatedPaymentTransaction;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Mutation(returns => Boolean)
+    async deletePaymentTransaction(@Arg('id') id:string){
+        try {
+            const deleteStatus = await this.paymentTransactionDao.delete(id)
+            return deleteStatus;
+        } catch (error) {
+            return error;
         }
     }
 

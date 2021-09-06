@@ -29,7 +29,7 @@ export default class ContributionTransactionDao implements Dao{
         }
         const contributionTransactionRepository = getConnection().getRepository(ContributionTransaction);
         try {
-            const contributionTransaction = await contributionTransactionRepository.findOne(id, {relations:["user", "quickUser", "contribution_item"]})
+            const contributionTransaction = await contributionTransactionRepository.findOne(id, {relations:["user", "quickUser", "contribution"]})
             if(contributionTransaction){
                 return contributionTransaction;
             }else{
@@ -44,7 +44,7 @@ export default class ContributionTransactionDao implements Dao{
     public getAll = async(): Promise<any> => {
         const contributionTransactionRepository = getConnection().getRepository(ContributionTransaction);
         try {
-            return await contributionTransactionRepository.find({relations:["user", "quickUser", "payment_item"]})
+            return await contributionTransactionRepository.find({relations:["user", "quickUser", "contribution"]})
         } catch (error) {
             console.log(error)    
         }

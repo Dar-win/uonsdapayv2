@@ -1,4 +1,3 @@
-import { type, userInfo } from "os";
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne } from "typeorm";
 import { User } from "../user/user.entity";
 import { Contribution } from "./contribution.entity";

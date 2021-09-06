@@ -27,7 +27,7 @@ export default class ContributionDao implements Dao{
         }
         const contributionRepository = getConnection().getRepository(Contribution);
         try {
-            const contribution = await contributionRepository.findOne(id, {relations: ["paymentItem", "pledges"]})
+            const contribution = await contributionRepository.findOne(id, {relations: ["contribution_transactions", "pledges", "campuses"]})
             if(contribution){
                 return contribution;
             }else{
@@ -42,7 +42,7 @@ export default class ContributionDao implements Dao{
     public getAll = async(): Promise<any> => {
         const contributionRepository = getConnection().getRepository(Contribution);
         try {
-            return await contributionRepository.find({relations: ["paymentItem", "pledges"]})
+            return await contributionRepository.find({relations: ["contribution_transactions", "pledges", "campuses"]})
         } catch (error) {
             console.log(error)    
         }
@@ -59,15 +59,17 @@ export default class ContributionDao implements Dao{
         try {
             const itemToUpdate = await contributionRepository.findOne(id)
             if(itemToUpdate){
-                return await contributionRepository.update(id, data)
+                await contributionRepository.update(id, data)
+                const updatedContribution = await contributionRepository.findOne(id, {relations: ["contribution_transactions", "pledges", "campuses"]})
+                return updatedContribution
             }else{
                 return "Missing records"
-                console.log("missing record")
             }
         } catch (error) {
             console.log(error)
         }
     }
+
     public delete = async(id: string): Promise<any> => {
         if(!id){
             //throw missing params error

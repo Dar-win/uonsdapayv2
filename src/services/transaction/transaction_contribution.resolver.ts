@@ -5,13 +5,12 @@ import { User } from "../user/user.entity";
 import { Contribution } from "./contribution.entity";
 import ContributionTransactionDao from "./transaction_contribution.dao";
 import { ContributionTransaction } from "./transaction_contribution.entity";
+import { ContributionTransactionDto } from "./transaction_contribution.dto";
 
 @Resolver(of => ContributionTransaction)
 export class ContributionTransactionResolver implements ResolverInterface<ContributionTransaction>{
 
     private contributionTransactionDao: ContributionTransactionDao = new ContributionTransactionDao();
-    private contributionsRepository = getRepository(Contribution)
-    private userRepository = getRepository(User)
 
     @Query(returns => ContributionTransaction)
     async getContributionTransaction (@Arg('id') id:string):Promise<ContributionTransaction | Error> {
@@ -30,6 +29,37 @@ export class ContributionTransactionResolver implements ResolverInterface<Contri
             return contributions;
         } catch (error) {
             return error
+        }
+    }
+
+
+    @Mutation(returns => ContributionTransaction)
+    async saveContributionTransaction(@Arg('contributionTransaction') contributionTransaction:ContributionTransactionDto):Promise<any>  {
+        try {
+            const savedContributionTransaction = await this.contributionTransactionDao.save(contributionTransaction);
+            return savedContributionTransaction;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Mutation(returns => ContributionTransaction)
+    async updateContributionTransaction(@Arg('id') id: string, @Arg('data') contributionTransaction: ContributionTransactionDto): Promise<any> {
+        try {
+            const updatedContributionTransaction = await this.contributionTransactionDao.update(id, contributionTransaction)
+            return updatedContributionTransaction;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Mutation(returns => Boolean)
+    async deleteContributionTransaction(@Arg('id') id:string){
+        try {
+            const deleteStatus = await this.contributionTransactionDao.delete(id)
+            return deleteStatus;
+        } catch (error) {
+            return error;
         }
     }
 

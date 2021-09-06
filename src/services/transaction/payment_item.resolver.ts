@@ -1,12 +1,9 @@
 import { Arg, FieldResolver, Mutation, Query, Resolver, ResolverInterface, Root } from "type-graphql";
-import { getRepository, Transaction } from "typeorm";
-import PledgeDao from "../transaction/pledge.dao";
-import { Pledge } from "../transaction/pledge.entity";
-import { ContributionTransaction } from "../transaction/transaction_contribution.entity";
-import { PaymentTransaction } from "../transaction/transaction_payment.entity";
+import { getRepository, Transaction } from "typeorm";import { PaymentTransaction } from "../transaction/transaction_payment.entity";
 import { User } from "../user/user.entity";
 import PaymentItemDao from "./payment_item.dao";
 import { PaymentItem } from "./payment_item.entity";
+import { PaymentItemDto } from "./payment_item.dto";
 
 @Resolver(of => PaymentItem)
 export class PaymentItemResolver implements ResolverInterface<PaymentItem>{
@@ -39,12 +36,40 @@ export class PaymentItemResolver implements ResolverInterface<PaymentItem>{
     @FieldResolver(returns=>[PaymentTransaction])
     async transactions(@Root() paymentItem:PaymentItem):Promise<PaymentTransaction[]>{
         try {
-            const payment_transactions = await this.paymentTransactionRepository.find({payment_item:paymentItem})
-            return payment_transactions;
+            return paymentItem.transactions;
         } catch (error) {
             return error
         }
     }
 
+    @Mutation(returns => PaymentItem)
+    async savePaymentItem(@Arg('paymentItemData') paymentItem: PaymentItemDto){
+        try {
+            const savedPaymentItem = await this.paymentItemDao.save(paymentItem)
+            return savedPaymentItem;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Mutation(returns => PaymentItem)
+    async updatePaymentItem(@Arg('id') id: string, @Arg('paymentItemData') paymentItem: PaymentItemDto){
+        try {
+            const updatedPaymentItem = await this.paymentItemDao.update(id, paymentItem)
+            return updatedPaymentItem;
+        } catch (error) {
+            return error;
+        }
+    }
+
+    @Mutation(returns => Boolean)
+    async deletePaymentItem(@Arg('id') id: string){
+        try {
+            const deleteStatus = await this.paymentItemDao.delete(id)
+            return deleteStatus;
+        } catch (error) {
+            return error;
+        }
+    }
     
 }

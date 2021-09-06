@@ -59,7 +59,8 @@ export default class PledgeDao implements Dao{
         try {
             const itemToUpdate = await pledgeRepository.findOne(id)
             if(itemToUpdate){
-                return await pledgeRepository.update(id, data)
+                await pledgeRepository.update(id, data)
+                const updatedPledge = await pledgeRepository.findOne(id, {relations: ["user", "contribution"]})
             }else{
                 return "Missing records"
                 console.log("missing record")

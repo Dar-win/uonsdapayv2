@@ -32,7 +32,7 @@ export class User{
     @Column({type: "boolean"})
     is_member: boolean;
 
-    @Field(()=>Campus)
+    @Field(()=>Campus, {nullable: true})
     @ManyToOne(() => Campus, campus => campus.users)
     campus: Campus;
 

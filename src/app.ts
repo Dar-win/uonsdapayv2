@@ -13,6 +13,8 @@ import { PaymentItemResolver } from './services/transaction/payment_item.resolve
 import { PledgeResolver } from './services/transaction/pledge.resolver';
 import { ContributionTransactionResolver } from './services/transaction/transaction_contribution.resolver';
 import { PaymentTransactionResolver } from './services/transaction/transaction_payment.resolver';
+import { ContributionResolver } from './services/transaction/contribution.resolver';
+import { QuickUserResolver } from './services/user/quick_user.resolver';
 
 const app:express.Application = express();
 
@@ -35,7 +37,16 @@ const app:express.Application = express();
     app.use(express.json())
 
     const schema = await buildSchema({
-      resolvers: [UserResolver, CampusResolver, PaymentItemResolver, PledgeResolver, ContributionTransactionResolver, PaymentTransactionResolver],
+      resolvers: [
+        UserResolver, 
+        CampusResolver, 
+        PaymentItemResolver, 
+        PledgeResolver, 
+        ContributionTransactionResolver, 
+        PaymentTransactionResolver,
+        ContributionResolver,
+        QuickUserResolver
+      ]
 
     })
     app.use('/graphql', graphqlHTTP({

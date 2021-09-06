@@ -44,10 +44,21 @@ export class CampusResolver implements ResolverInterface<Campus>{
     }
 
     @Mutation(returns => Campus)
-    async updateCampus(@Arg('campusInformation') campusInformation:CampusDto, @Arg('id') id:string): Promise<Campus> {
+    async updateCampus(@Arg('campusInformation') campusInformation:CampusDto, @Arg('id') id:string): Promise<any> {
         try {
             const campus = await this.campusDao.update(id, campusInformation);
+            console.log(campus)
             return campus
+        } catch (error) {
+            return error
+        }
+    }
+
+    @Mutation(returns => Boolean)
+    async deleteCampus(@Arg('id')id: string){
+        try {
+            const deleteStatus = await this.campusDao.delete(id);
+            return deleteStatus;
         } catch (error) {
             return error
         }
