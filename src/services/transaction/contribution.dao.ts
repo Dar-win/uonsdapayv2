@@ -1,58 +1,55 @@
 import { getConnection } from "typeorm";
+import MissingParametersException from "../../exceptions/MissingParametersException";
+import RecordNotFoundException from "../../exceptions/RecordNotFoundException";
 import Dao from "../../interfaces/dao.interface";
 import { Contribution } from "./contribution.entity";
 
 export default class ContributionDao implements Dao{
-    public save = async(data: any): Promise<any> => {
+    public save = async(data: any): Promise<MissingParametersException | Contribution | Error> => {
         if(!data){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
         const contributionRepository = getConnection().getRepository(Contribution)
         try {
             const dataToSave: Contribution = data;
-            const savedContribution = await contributionRepository.save(dataToSave)
+            const savedContribution: Contribution = await contributionRepository.save(dataToSave)
             return savedContribution;
         } catch (error) {
             console.log(error)
+            throw new Error();
         }
     }
 
-    public getOne = async(id: string): Promise<any> => {
+    public getOne = async(id: string): Promise<MissingParametersException | Contribution | RecordNotFoundException | Error> => {
         if(!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
         const contributionRepository = getConnection().getRepository(Contribution);
         try {
-            const contribution = await contributionRepository.findOne(id, {relations: ["contribution_transactions", "pledges", "campuses"]})
+            const contribution: Contribution = await contributionRepository.findOne(id, {relations: ["contribution_transactions", "pledges", "campuses"]})
             if(contribution){
                 return contribution;
             }else{
-                //throw missing record error
-                console.log("Missing record")
+                throw new RecordNotFoundException()
             }
         } catch (error) {
-           console.log(error) 
+            throw new Error(error)
         }
     }
 
-    public getAll = async(): Promise<any> => {
+    public getAll = async(): Promise<Contribution[] | Error> => {
         const contributionRepository = getConnection().getRepository(Contribution);
         try {
             return await contributionRepository.find({relations: ["contribution_transactions", "pledges", "campuses"]})
         } catch (error) {
             console.log(error)    
+            throw new Error()
         }
     }
 
-    public update = async(id: string, data: any): Promise<any> => {
+    public update = async(id: string, data: any): Promise<MissingParametersException | Contribution | RecordNotFoundException | Error> => {
         if(!data || ! id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
 
         const contributionRepository = getConnection().getRepository(Contribution);
@@ -60,21 +57,19 @@ export default class ContributionDao implements Dao{
             const itemToUpdate = await contributionRepository.findOne(id)
             if(itemToUpdate){
                 await contributionRepository.update(id, data)
-                const updatedContribution = await contributionRepository.findOne(id, {relations: ["contribution_transactions", "pledges", "campuses"]})
+                const updatedContribution: Contribution = await contributionRepository.findOne(id, {relations: ["contribution_transactions", "pledges", "campuses"]})
                 return updatedContribution
             }else{
-                return "Missing records"
+                throw new RecordNotFoundException()
             }
         } catch (error) {
-            console.log(error)
+            throw new Error()
         }
     }
 
-    public delete = async(id: string): Promise<any> => {
+    public delete = async(id: string): Promise<MissingParametersException | RecordNotFoundException | boolean | Error> => {
         if(!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
 
         const contributionRepository = getConnection().getRepository(Contribution);
@@ -84,10 +79,10 @@ export default class ContributionDao implements Dao{
                 await contributionRepository.softDelete(id);
                 return true;
             }else{
-                return false
+                throw new RecordNotFoundException()
             }
         } catch (error) {
-            console.log(error)
+            throw new Error()
         }
     }
 

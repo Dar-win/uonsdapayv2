@@ -70,7 +70,6 @@ const app:express.Application = express();
 
 
     app.listen(3000, ()=>{
-          console.log(process.env.MYSQL_PASSWORD)
           console.log("Listening on port 3000");
           
       });

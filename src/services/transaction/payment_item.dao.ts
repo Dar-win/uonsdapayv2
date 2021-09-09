@@ -1,58 +1,55 @@
 import { getConnection } from "typeorm";
+import MissingParametersException from "../../exceptions/MissingParametersException";
+import RecordNotFoundException from "../../exceptions/RecordNotFoundException";
 import Dao from "../../interfaces/dao.interface";
 import { PaymentItem } from "./payment_item.entity";
 
 export default class PaymentItemDao implements Dao{
-    public save = async(data: any): Promise<any> => {
+
+    public save = async(data: any): Promise<MissingParametersException | PaymentItem | Error> => {
         if(!data){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
         const paymentItemRepository = getConnection().getRepository(PaymentItem)
         try {
             const dataToSave: PaymentItem = data;
-            const savedPaymentItem = await paymentItemRepository.save(dataToSave)
+            const savedPaymentItem: PaymentItem = await paymentItemRepository.save(dataToSave)
             return savedPaymentItem;
         } catch (error) {
-            console.log(error)
+            throw new Error()
         }
     }
 
-    public getOne = async(id: string): Promise<any> => {
+    public getOne = async(id: string): Promise<MissingParametersException | PaymentItem | RecordNotFoundException | Error> => {
         if(!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
+
         try {
-            const paymentItem = await paymentItemRepository.findOne(id, {relations: ["transactions"]})
+            const paymentItem: PaymentItem = await paymentItemRepository.findOne(id, {relations: ["transactions"]})
             if(paymentItem){
                 return paymentItem;
             }else{
-                //throw missing record error
-                console.log("Missing record")
+                throw new RecordNotFoundException()
             }
         } catch (error) {
-           console.log(error) 
+            throw new Error()
         }
     }
 
-    public getAll = async(): Promise<any> => {
+    public getAll = async(): Promise<PaymentItem[] | Error> => {
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
         try {
             return await paymentItemRepository.find({relations: ["transactions"]})
         } catch (error) {
-            console.log(error)    
+            throw new Error()
         }
     }
 
-    public update = async(id: string, data: any): Promise<any> => {
+    public update = async(id: string, data: any): Promise<MissingParametersException | PaymentItem | RecordNotFoundException | Error> => {
         if(!data || ! id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
 
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
@@ -60,21 +57,19 @@ export default class PaymentItemDao implements Dao{
             const itemToUpdate = await paymentItemRepository.findOne(id)
             if(itemToUpdate){
                 const item = await paymentItemRepository.update(id, data)
-                const updatedPaymentItem = await paymentItemRepository.findOne(id, {relations: ["transactions"]})
+                const updatedPaymentItem: PaymentItem = await paymentItemRepository.findOne(id, {relations: ["transactions"]})
                 return updatedPaymentItem
             }else{
-                return "Missing records"
-                console.log("missing record")
+                throw new RecordNotFoundException()
             }
         } catch (error) {
-            console.log(error)
+            throw new Error()
         }
     }
-    public delete = async(id: string): Promise<any> => {
+
+    public delete = async(id: string): Promise<MissingParametersException | boolean | RecordNotFoundException | Error> => {
         if(!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
 
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
@@ -84,10 +79,10 @@ export default class PaymentItemDao implements Dao{
                 await paymentItemRepository.softDelete(id);
                 return true;
             }else{
-                return false
+                throw new RecordNotFoundException()
             }
         } catch (error) {
-            console.log(error)
+            throw new Error()
         }
     }
 

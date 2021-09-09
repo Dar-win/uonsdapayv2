@@ -20,6 +20,9 @@ export class CreateUserDto implements Partial<User>{
     email_address?: string;
 
     @Field({nullable:true})
+    password?: string;
+
+    @Field({nullable:true})
     phone_number?: string;
 
     @Field({nullable:true})

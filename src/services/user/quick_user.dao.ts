@@ -1,15 +1,16 @@
-import { getConnection, Repository } from "typeorm";
+import { getConnection, RemoveOptions, Repository } from "typeorm";
+import MissingParametersException from "../../exceptions/MissingParametersException";
+import RecordNotFoundException from "../../exceptions/RecordNotFoundException";
 import Dao from "../../interfaces/dao.interface";
 import { QuickUser } from "./quick_user.entity";
 
 export class QuickUserDao implements Dao{
     
-    public async save(data: any) {
+    public async save(data: any): Promise<MissingParametersException | QuickUser> {
         if(!data){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
+
         const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
         const newQuickUser: QuickUser = data;
 
@@ -18,44 +19,39 @@ export class QuickUserDao implements Dao{
         return savedData;
     }
 
-    public async getOne(id: string){
+    public async getOne(id: string): Promise<MissingParametersException | QuickUser | RecordNotFoundException | Error>{
         if(!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
 
         const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
-        
         try {
             const record = await userRepository.findOne(id, {relations: ["contribution_transactions", "payment_transactions"]});
             if(record){
                 return record;
             }else{
-                console.log("Record not found")
-                //throw record not found error
+                throw new RecordNotFoundException()
             }
         } catch (error) {
             console.log(error)
+            throw new Error()
         }
     }
 
-    public async getAll(){
+    public async getAll(): Promise<QuickUser[] | Error>{
         const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
         try {
-            const records = await userRepository.find({relations: ["campus", "pledges"]});
-            console.log(records)
-            return records;
+            const quickUsers: QuickUser[] = await userRepository.find({relations: ["contribution_transactions", "payment_transactions"]});
+            return quickUsers;
         } catch (error) {
             console.log(error)
+            throw new Error()
         }
     }
 
-    public async update(id: string, data:any){
+    public async update(id: string, data:any): Promise<MissingParametersException | RecordNotFoundException | Error | QuickUser>{
         if(!data||!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
         const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
 
@@ -63,28 +59,22 @@ export class QuickUserDao implements Dao{
             const userToUpdate = await userRepository.findOne(id);
 
             if(userToUpdate){
-                // const savedData = userRepository.merge(new QuickUser(), recordToUpdate, data);
-                const updatedQuickUser = await userRepository.update(id, data)
-                const user = await userRepository.findOne(id, {relations: ["contribution_transactions", "payment_transactions"]});
-                console.log(user)
+                await userRepository.update(id, data)
+                const user: QuickUser = await userRepository.findOne(id, {relations: ["contribution_transactions", "payment_transactions"]});
                 return user;
-            }else{
-                
-                console.log("Record not found")
-                return null;
-                //throw record not found exception
+            }else{                
+                throw new RecordNotFoundException()
             }
         } catch (error) {
             console.log(error)
+            throw new Error()
         }
         
     }
 
-    public async delete(id: string){
+    public async delete(id: string): Promise<MissingParametersException | RecordNotFoundException | Error | boolean>{
         if(!id){
-            //throw missing params error
-            console.log("Missing parameters")
-            return
+            throw new MissingParametersException()
         }
         const userRepository: Repository<QuickUser> = getConnection().getRepository(QuickUser);
 
@@ -92,11 +82,14 @@ export class QuickUserDao implements Dao{
             const recordToDelete = await userRepository.findOne(id);
 
             if(recordToDelete){
-                const deletedRecord = userRepository.softDelete(id);
+                await userRepository.softDelete(id);
                 return true;
+            }else{
+                throw new RecordNotFoundException()
             }
         } catch (error) {
             console.log(error)
+            throw new Error()
         }
         
 

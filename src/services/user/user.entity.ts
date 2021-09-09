@@ -25,6 +25,10 @@ export class User{
     email_address: string;
 
     @Field()
+    @Column({type:"varchar", length:150})
+    password: string;
+
+    @Field()
     @Column({type: "varchar", length: 20})
     phone_number: string;
 
@@ -51,6 +55,8 @@ export class User{
     @Field(()=>[ContributionTransaction], { nullable: true })
     @OneToMany(() => ContributionTransaction, contributionTransaction=>contributionTransaction.user)
     contribution_transactions: ContributionTransaction[];
+
+
 
     @CreateDateColumn()
     created_at?: any;
