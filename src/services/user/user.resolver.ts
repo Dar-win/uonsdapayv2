@@ -5,7 +5,7 @@ import { PaymentTransaction } from "../transaction/transaction_payment.entity";
 import { Campus } from "./campus.entity";
 import UserDao from "./user.dao";
 import { User } from "./user.entity";
-import {CreateUserDto} from "./user.dto"
+import {UserDto} from "./user.dto"
 import { UpdateUserDto } from "./user.update.dto";
 
 @Resolver(of => User)
@@ -34,7 +34,7 @@ export class UserResolver implements ResolverInterface<User>{
     }
 
     @Mutation(returns => User)
-    async saveUser(@Arg('user') user: CreateUserDto): Promise<User | Error>{
+    async saveUser(@Arg('user') user: UserDto): Promise<User | Error>{
         try {
             const createdUser = await this.userDao.save(user)
             return createdUser;

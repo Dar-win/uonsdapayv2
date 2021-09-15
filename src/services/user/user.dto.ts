@@ -5,7 +5,7 @@ import { Field, InputType, ID } from "type-graphql";
 import { CampusDto } from './campus.dto';
 
 @InputType()
-export class CreateUserDto implements Partial<User>{
+export class UserDto implements Partial<User>{
 
     @Field(type => ID, {nullable: true})
     user_id?: number;

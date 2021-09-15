@@ -24,7 +24,7 @@ export class PledgeResolver implements ResolverInterface<Pledge>{
     @Query(returns => [Pledge])
     async getPledges():Promise<Pledge[]|Error> {
         try {
-            const pledges = await this.pledgeDao.getAll();
+            const pledges = await this.pledgeDao.getAll(2, 3);
             return pledges;
         } catch (error) {
             return error

@@ -56,8 +56,6 @@ export class User{
     @OneToMany(() => ContributionTransaction, contributionTransaction=>contributionTransaction.user)
     contribution_transactions: ContributionTransaction[];
 
-
-
     @CreateDateColumn()
     created_at?: any;
 

@@ -2,7 +2,7 @@ import { PaymentItem } from "./payment_item.entity";
 import { User } from "../user/user.entity";
 import { QuickUser } from "../user/quick_user.entity";
 import { InputType, ID, Field, Int } from "type-graphql";
-import { CreateUserDto } from "../user/user.dto";
+import { UserDto } from "../user/user.dto";
 import { QuickUserDto } from "../user/quick_user.dto";
 import { PaymentItemDto } from "./payment_item.dto";
 
@@ -11,7 +11,7 @@ export class PaymentTransactionDto{
     @Field(()=>ID, {nullable: true})
     transaction_id?: number;
 
-    @Field(()=>CreateUserDto, {nullable: true})
+    @Field(()=>UserDto, {nullable: true})
     user?: User;
 
     @Field(()=>QuickUserDto, {nullable: true})

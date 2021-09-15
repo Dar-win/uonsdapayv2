@@ -1,7 +1,7 @@
 import { User } from "../user/user.entity";
 import { Contribution } from "./contribution.entity";
 import { ID, Field, Int, InputType } from "type-graphql";
-import { CreateUserDto } from "../user/user.dto";
+import { UserDto } from "../user/user.dto";
 import { ContributionDto } from "./contribution.dto";
 
 @InputType()
@@ -16,7 +16,7 @@ export class PledgeDto{
     @Field({nullable:true})
     status: string
 
-    @Field(()=>CreateUserDto, {nullable:true})
+    @Field(()=>UserDto, {nullable:true})
     user: User;
 
     @Field(()=>ContributionDto, {nullable:true})

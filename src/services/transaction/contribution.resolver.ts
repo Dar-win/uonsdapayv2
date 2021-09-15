@@ -14,7 +14,7 @@ export class ContributionResolver implements ResolverInterface<Contribution>{
     @Query(returns =>[Contribution])
     async getContributions():Promise<any>{
         try {
-            const contributions = await this.contributionsDao.getAll();
+            const contributions = await this.contributionsDao.getAll(2, 3);
             return contributions
         } catch (error) {
             return error

@@ -2,6 +2,9 @@ import { getConnection, Repository } from "typeorm";
 import MissingParametersException from "../../exceptions/MissingParametersException";
 import RecordNotFoundException from "../../exceptions/RecordNotFoundException";
 import Dao from "../../interfaces/dao.interface";
+import { Pledge } from "../transaction/pledge.entity";
+import { ContributionTransaction } from "../transaction/transaction_contribution.entity";
+import { PaymentTransaction } from "../transaction/transaction_payment.entity";
 import { User } from "./user.entity";
 
 export default class UserDao implements Dao{
@@ -14,9 +17,14 @@ export default class UserDao implements Dao{
         const userRepository: Repository<User> = getConnection().getRepository(User);
         const newUser: User = data;
 
-        const savedData: User = await userRepository.save(newUser)
+        try {
+            const savedData: User = await userRepository.save(newUser)
+            return savedData
+        } catch (error) {
+            console.log(error)
+            throw new Error()
+        }
 
-        return savedData;
     }
 
     public async getOne(id: string): Promise<MissingParametersException | RecordNotFoundException | Error | User>{
@@ -92,6 +100,55 @@ export default class UserDao implements Dao{
             throw new Error()
         }
         
+    }
 
+    public getUserPledges = async(userId: number, page: number, limit: number) => {
+        if(!userId || !page || !limit) throw new MissingParametersException();
+        const pledgeRepository = getConnection().getRepository(Pledge);
+        // console.log(userId ,"At dao")
+        try{
+            const pledges = pledgeRepository.createQueryBuilder("pledges");
+            pledges.leftJoinAndSelect("pledges.user", "user")
+                .leftJoinAndSelect("pledges.contribution", "contribution")
+                .where("user.user_id = :id", {id: userId})
+                .take(limit)
+                .skip((page -1 )*limit)
+            return pledges.getMany()
+        }catch(error){
+            console.log(error)
+        }
+    }
+
+    public getUserTransactionPayments = async(userId: number, page: number, limit: number) => {
+        if(!userId || !page || !limit) throw new MissingParametersException();
+        const transactionPaymentRepository = getConnection().getRepository(PaymentTransaction);
+        try{
+            const paymentTransactions = transactionPaymentRepository.createQueryBuilder("paymentTransactions");
+            paymentTransactions.leftJoinAndSelect("paymentTransactions.user", "user")
+                .leftJoinAndSelect("paymentTransactions.payment_item", "payment_item")
+                .where("user.user_id = :id", {id: userId})
+                .take(limit)
+                .skip((page -1 )*limit)
+
+            return await paymentTransactions.getMany()
+        }catch(error){
+            console.log(error)
+        }
+    }
+    public getUserTransactionContributions = async(userId: number, page: number, limit: number) => {
+        if(!userId || !page || !limit) throw new MissingParametersException();
+        const transactionContributionRepository = getConnection().getRepository(ContributionTransaction);
+        try{
+            const contributionTransactions = transactionContributionRepository.createQueryBuilder("contributionTransactions");
+            contributionTransactions.leftJoinAndSelect("contributionTransactions.user", "user")
+                .leftJoinAndSelect("contributionTransactions.contribution", "contribution")
+                .where("user.user_id = :id", {id: userId})
+                .take(limit)
+                .skip((page -1 )*limit)
+            
+                return await contributionTransactions.getMany()
+        }catch(error){
+            console.log(error)
+        }
     }
 }

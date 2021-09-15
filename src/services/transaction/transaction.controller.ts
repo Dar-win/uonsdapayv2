@@ -1,6 +1,7 @@
 import Controller from "../../interfaces/controller.interface";
 import { Request, Response, NextFunction, Router, request } from "express";
 import PaymentTransactionDao from "./transaction_payment.dao";
+import { requestQueryPagination } from "../../types";
 
 export default class TransactionController implements Controller{
     path: string = '/transactions'
@@ -40,8 +41,12 @@ export default class TransactionController implements Controller{
     }
 
     private getAll = async (request:Request, response: Response, next: NextFunction) => {
+        const queryParams: requestQueryPagination = request.query;
+        const page: number = parseInt(queryParams.page);
+        const limit: number = parseInt(queryParams.limit);
+
         try {
-            const paymentTransactions = await this.paymentTransactionDao.getAll();
+            const paymentTransactions = await this.paymentTransactionDao.getAll(page, limit);
             response.send(paymentTransactions)
         } catch (error) {
             console.log(error)

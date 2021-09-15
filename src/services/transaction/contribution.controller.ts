@@ -1,6 +1,7 @@
 import Controller from "../../interfaces/controller.interface";
 import { Request, Response, NextFunction, Router, request } from "express";
 import ContributionDao from './contribution.dao'
+import { requestQueryPagination } from "../../types";
 
 export default class ContributionController implements Controller{
     path: string = '/contributions'
@@ -41,8 +42,13 @@ export default class ContributionController implements Controller{
     }
 
     private getAll = async (request:Request, response: Response, next: NextFunction) => {
+        const queryParams: requestQueryPagination = request.query;
+        const filter: string = queryParams.f;
+        const sort: string = queryParams.s;
+        const page: number = parseInt(queryParams.page);
+        const limit: number = parseInt(queryParams.limit);
         try {
-            const contributions = await this.contributionDao.getAll();
+            const contributions = await this.contributionDao.getAll(page, limit)
             response.send(contributions)
         } catch (error) {
             console.log(error)

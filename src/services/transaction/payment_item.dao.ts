@@ -38,12 +38,19 @@ export default class PaymentItemDao implements Dao{
         }
     }
 
-    public getAll = async(): Promise<PaymentItem[] | Error> => {
+    public getAll = async(page: number, limit: number): Promise<PaymentItem[] | Error> => {
+        if(!page || !limit) throw new MissingParametersException()
         const paymentItemRepository = getConnection().getRepository(PaymentItem);
         try {
-            return await paymentItemRepository.find({relations: ["transactions"]})
+            const paymentItems = paymentItemRepository.createQueryBuilder("paymentItem");
+            paymentItems.leftJoinAndSelect("paymentItem.transactions", "transactions")
+                .take(limit)
+                .skip((page - 1) * limit);
+            return await paymentItems.getMany();
+            // return await paymentItemRepository.find({relations: ["transactions"]})
         } catch (error) {
-            throw new Error()
+            console.log(error)
+            throw new Error(error)
         }
     }
 

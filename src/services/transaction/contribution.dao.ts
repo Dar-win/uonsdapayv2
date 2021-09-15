@@ -37,10 +37,15 @@ export default class ContributionDao implements Dao{
         }
     }
 
-    public getAll = async(): Promise<Contribution[] | Error> => {
+    public getAll = async(page: number, limit: number): Promise<Contribution[] | Error> => {
         const contributionRepository = getConnection().getRepository(Contribution);
         try {
-            return await contributionRepository.find({relations: ["contribution_transactions", "pledges", "campuses"]})
+            const contributions = contributionRepository.createQueryBuilder("contribution")
+            contributions.leftJoinAndSelect("contribution.contribution_transactions", "contribution_transactions")
+                .take(limit)
+                .skip((page - 1)*limit)
+            return await contributions.getMany();
+            // return await contributionRepository.find({relations: ["contribution_transactions", "pledges", "campuses"]})
         } catch (error) {
             console.log(error)    
             throw new Error()

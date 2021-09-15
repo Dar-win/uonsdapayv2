@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan'
 import {createConnection} from "typeorm";
 import { buildSchema } from 'type-graphql';
@@ -15,7 +15,7 @@ import { ContributionTransactionResolver } from './services/transaction/transact
 import { PaymentTransactionResolver } from './services/transaction/transaction_payment.resolver';
 import { ContributionResolver } from './services/transaction/contribution.resolver';
 import { QuickUserResolver } from './services/user/quick_user.resolver';
-
+import errorHandler from './middleware/error.middleware';
 const app:express.Application = express();
 
 
@@ -54,10 +54,16 @@ const app:express.Application = express();
       graphiql: true
     }))
 
+   
+
     const setControllers = controllers.map((controller) => new controller());
     setControllers.forEach((controller) => {
       app.use("/", controller.router);
     });
+
+    app.use(errorHandler)
+
+    
 
 
     // let campusController:any = controllers[0];

@@ -6,19 +6,22 @@ import { Campus } from "./campus.entity"
 
 export default class CampusDao implements Dao {
 
-    public save = async (data: any): Promise<MissingParametersException | Campus | Error> => {
+    public save = async (data: any): Promise<Campus> => {
         if(!data){
             throw new MissingParametersException()
         }
         const campusRepository = getConnection().getRepository(Campus)
+        const newCampus: Campus = data
         try {
-            const savedCampus: Campus = await campusRepository.save(data);
+            const savedCampus: Campus = await campusRepository.save(newCampus);
             return savedCampus;
         } catch (error) {
             console.log(error)
             throw new Error()
         }
     }
+
+    
 
     public getOne = async(id: string): Promise<MissingParametersException | RecordNotFoundException | Error | Campus> => {
         if(!id){
@@ -42,7 +45,8 @@ export default class CampusDao implements Dao {
     public getAll = async (): Promise<Campus[] | Error> => {
         const campusRepository = getConnection().getRepository(Campus);
         try {
-            const campuses: Campus[] = await campusRepository.find({relations:['contributions', 'users']});
+            // const campuses: Campus[] = await campusRepository.find({relations:['contributions', 'users']});
+            const campuses: Campus[] = await campusRepository.createQueryBuilder("campus").getMany();
             return campuses;
         } catch (error) {
             console.log(error)

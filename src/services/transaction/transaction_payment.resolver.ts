@@ -24,7 +24,7 @@ export class PaymentTransactionResolver implements ResolverInterface<PaymentTran
     @Query(returns => [PaymentTransaction])
     async getPaymentTransactions():Promise<PaymentTransaction[]|Error> {
         try {
-            const paymentTransactions = await this.paymentTransactionDao.getAll();
+            const paymentTransactions = await this.paymentTransactionDao.getAll(2, 3);
             return paymentTransactions;
         } catch (error) {
             return error

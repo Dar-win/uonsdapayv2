@@ -36,7 +36,7 @@ export class CampusResolver implements ResolverInterface<Campus>{
     @Mutation(returns => Campus)
     async addCampus(@Arg('newCampus') newCampus:CampusDto): Promise<Campus> {
         try {
-            const campus = await this.campusDao.save(newCampus);
+            const campus: Campus = await this.campusDao.save(newCampus);
             return campus
         } catch (error) {
             return error

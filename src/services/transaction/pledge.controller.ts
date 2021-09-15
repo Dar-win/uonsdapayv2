@@ -1,6 +1,8 @@
 import Controller from "../../interfaces/controller.interface";
 import { Request, Response, NextFunction, Router, request } from "express";
 import PledgeDao from './pledge.dao'
+import { requestQueryPagination } from "../../types";
+import RequestWithUser from "../../interfaces/request.user.interface";
 
 export default class PledgeController implements Controller{
     path: string = '/pledges'
@@ -41,8 +43,11 @@ export default class PledgeController implements Controller{
     }
 
     private getAll = async (request:Request, response: Response, next: NextFunction) => {
+        const queryParams: requestQueryPagination = request.query;
+        const page: number = parseInt(queryParams.page);
+        const limit: number = parseInt(queryParams.limit);
         try {
-            const pledges = await this.pledgeDao.getAll();
+            const pledges = await this.pledgeDao.getAll(page, limit);
             response.send(pledges)
         } catch (error) {
             console.log(error)

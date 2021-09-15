@@ -39,10 +39,15 @@ export default class PledgeDao implements Dao{
         }
     }
 
-    public getAll = async(): Promise<Pledge[] | Error> => {
+    public getAll = async(page: number, limit: number): Promise<Pledge[] | Error> => {
+        if(!page || !limit) throw new MissingParametersException()
         const pledgeRepository = getConnection().getRepository(Pledge);
         try {
-            return await pledgeRepository.find({relations: ["user", "contribution"]})
+            return await pledgeRepository.find({
+                relations: ["user", "contribution"], 
+                skip: (page -1) * limit,
+                take: limit
+            })
         } catch (error) {
             console.log(error)
             throw new Error(error)  
@@ -88,5 +93,4 @@ export default class PledgeDao implements Dao{
             throw new Error()
         }
     }
-
 }

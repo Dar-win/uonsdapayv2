@@ -3,7 +3,7 @@ import { QuickUser } from "../user/quick_user.entity";
 import { Contribution } from "./contribution.entity";
 import { ID, Field, Int, InputType } from "type-graphql";
 import { QuickUserDto } from "../user/quick_user.dto";
-import { CreateUserDto } from "../user/user.dto";
+import { UserDto } from "../user/user.dto";
 import { ContributionDto } from "./contribution.dto";
 
 @InputType()
@@ -11,7 +11,7 @@ export class ContributionTransactionDto{
     @Field(()=>ID, {nullable: true})
     transaction_id?: number;
 
-    @Field(()=>CreateUserDto, {nullable: true})
+    @Field(()=>UserDto, {nullable: true})
     user?: User;
 
     @Field(()=>QuickUserDto, {nullable: true})

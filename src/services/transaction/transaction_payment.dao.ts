@@ -42,10 +42,10 @@ export default class PaymentTransactionDao implements Dao{
         }
     }
 
-    public getAll = async(): Promise<PaymentTransaction[] | Error> => {
+    public getAll = async(page: number, limit: number): Promise<PaymentTransaction[] | Error> => {
         const paymentTransactionRepository = getConnection().getRepository(PaymentTransaction);
         try {
-            return await paymentTransactionRepository.find({relations:["user", "quickUser", "payment_item"]})
+            return await paymentTransactionRepository.find({relations:["user", "quickUser", "payment_item"], take: limit, skip: (page -1 )*limit})
         } catch (error) {
             console.log(error)    
             throw new Error()

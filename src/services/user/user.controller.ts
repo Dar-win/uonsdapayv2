@@ -1,6 +1,9 @@
 import { Request, Response, Router, NextFunction } from "express";
 import Controller from "../../interfaces/controller.interface";
 import UserDao from "./user.dao";
+import { AuthMiddleware } from "../../middleware/authentication.middleware"
+import RequestWithUser from "../../interfaces/request.user.interface";
+import { requestQueryPagination } from "../../types";
 
 export default class UserController implements Controller {
     path: string = '/users';
@@ -13,12 +16,15 @@ export default class UserController implements Controller {
 
     private initializeRoutes():void{
         this.router.route(this.path)
-            .get(this.getAll)
-            .post(this.save);
+            .get(AuthMiddleware, this.getAll)
+            .post(AuthMiddleware, this.save);
         this.router.route(`${this.path}/:userId`)
             .get(this.getOne)
             .patch(this.update)
             .delete(this.delete)
+        this.router.post(`${this.path}/pledges`, AuthMiddleware, this.getUserPledges)
+        this.router.post(`${this.path}/paymentTransactions`, AuthMiddleware, this.getUserTransactionPayments)
+        this.router.post(`${this.path}/contributionTransactions`, AuthMiddleware, this.getUserTransactionContributions)
 
     }
 
@@ -47,7 +53,7 @@ export default class UserController implements Controller {
             const users = await this.userDao.getAll();
             response.send(users)
         } catch (error) {
-            console.log(error)
+            return error
         }
     }
 
@@ -66,6 +72,42 @@ export default class UserController implements Controller {
             response.send(isDeleted)
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    private getUserPledges = async (request:RequestWithUser, response: Response) => {
+        const queryParams: requestQueryPagination = request.query;
+        const page: number = parseInt(queryParams.page);
+        const limit: number = parseInt(queryParams.limit);
+        try {
+            const userPledges = await this.userDao.getUserPledges(request.user.user_id, page, limit)
+            response.send(userPledges)
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+    private getUserTransactionPayments = async (request:RequestWithUser, response: Response) => {
+        const queryParams: requestQueryPagination = request.query;
+        const page: number = parseInt(queryParams.page);
+        const limit: number = parseInt(queryParams.limit);
+        try {
+            const userTransactionPayments = await this.userDao.getUserTransactionPayments(request.user.user_id, page, limit)
+            response.send(userTransactionPayments)
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+    private getUserTransactionContributions = async (request:RequestWithUser, response: Response) => {
+        const queryParams: requestQueryPagination = request.query;
+        const page: number = parseInt(queryParams.page);
+        const limit: number = parseInt(queryParams.limit);
+        try {
+            const userTransactionContributions = await this.userDao.getUserTransactionContributions(request.user.user_id, page, limit)
+            response.send(userTransactionContributions)
+        }catch(error){
+            console.log(error);
         }
     }
 }

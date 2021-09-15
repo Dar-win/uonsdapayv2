@@ -26,7 +26,7 @@ export class PaymentItemResolver implements ResolverInterface<PaymentItem>{
     @Query(returns => [PaymentItem])
     async getPaymentItems():Promise<PaymentItem[]|Error> {
         try {
-            const paymentItems = await this.paymentItemDao.getAll();
+            const paymentItems = await this.paymentItemDao.getAll(2, 3);
             return paymentItems;
         } catch (error) {
             return error

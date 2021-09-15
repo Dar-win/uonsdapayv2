@@ -4,7 +4,7 @@ const mailUserName = process.env.MAIL_USERNAME
 const mailPassword = process.env.MAIL_PASSWORD
 
 export default nodemailer.createTransport({
-    host: "mail.uonsdachurch.co.ke ",
+    host: "smtp.uonsdachurch.co.ke ",
     port: 465,
     secure: true, // use TLS
     auth: {
