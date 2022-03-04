@@ -30,6 +30,7 @@ export default class PledgeController implements Controller{
             response.send(savedPledge);
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -39,6 +40,7 @@ export default class PledgeController implements Controller{
             response.send(pledge)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -51,6 +53,7 @@ export default class PledgeController implements Controller{
             response.send(pledges)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -60,6 +63,7 @@ export default class PledgeController implements Controller{
             response.send(updatedItem)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -69,6 +73,7 @@ export default class PledgeController implements Controller{
             response.send(isDeleted)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 

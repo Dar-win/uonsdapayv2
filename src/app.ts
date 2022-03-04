@@ -24,12 +24,9 @@ const app:express.Application = express();
     try {
       connection = await createConnection(database);
       console.log("Database connected")
-    //   logger.info("Database connected");
     } catch (error) {
         console.log("Error connecting to database")
         console.log(error)
-    //   logger.error("Error while connecting to the database", error);
-    //   process.exit(1);
     }
   
 
@@ -62,9 +59,6 @@ const app:express.Application = express();
     });
 
     app.use(errorHandler)
-
-    
-
 
     // let campusController:any = controllers[0];
     // campusController = new campusController();

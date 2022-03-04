@@ -29,6 +29,7 @@ export default class ContributionController implements Controller{
             response.send(savedContribution);
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -38,6 +39,7 @@ export default class ContributionController implements Controller{
             response.send(contribution)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -52,6 +54,8 @@ export default class ContributionController implements Controller{
             response.send(contributions)
         } catch (error) {
             console.log(error)
+            next(error)
+            
         }
     }
 
@@ -61,6 +65,7 @@ export default class ContributionController implements Controller{
             response.send(updatedItem)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -70,6 +75,7 @@ export default class ContributionController implements Controller{
             response.send(isDeleted)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 

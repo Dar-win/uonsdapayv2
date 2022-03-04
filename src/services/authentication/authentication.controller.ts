@@ -64,7 +64,7 @@ class AuthenticationController implements Controller{
                 console.log("There is no token")
             }
         } catch (error) {
-            
+            next(error)
         }
     }
 
@@ -80,6 +80,7 @@ class AuthenticationController implements Controller{
             }
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -97,6 +98,7 @@ class AuthenticationController implements Controller{
             }
         }catch(error){
             console.log(error)
+            next(error)
         }
     }
 }

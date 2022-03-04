@@ -29,6 +29,7 @@ export default class PaymentItemController implements Controller{
             response.send(savedPaymentItem);
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -38,6 +39,7 @@ export default class PaymentItemController implements Controller{
             response.send(paymentItem)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -49,7 +51,7 @@ export default class PaymentItemController implements Controller{
             const paymentItems = await this.paymentItemDao.getAll(page, limit);
             response.send(paymentItems)
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     }
 
@@ -59,6 +61,7 @@ export default class PaymentItemController implements Controller{
             response.send(updatedItem)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -68,6 +71,7 @@ export default class PaymentItemController implements Controller{
             response.send(isDeleted)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 

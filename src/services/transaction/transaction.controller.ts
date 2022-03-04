@@ -28,6 +28,7 @@ export default class TransactionController implements Controller{
             response.send(savedTransaction);
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -37,6 +38,7 @@ export default class TransactionController implements Controller{
             response.send(paymentTransaction)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -50,6 +52,7 @@ export default class TransactionController implements Controller{
             response.send(paymentTransactions)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -59,6 +62,7 @@ export default class TransactionController implements Controller{
             response.send(isDeleted)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 

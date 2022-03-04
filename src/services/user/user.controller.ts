@@ -35,6 +35,7 @@ export default class UserController implements Controller {
             response.send(savedUser)
         } catch (error) {
             console.log(error)
+            next(error)
         }
         
     }
@@ -45,6 +46,7 @@ export default class UserController implements Controller {
             response.send(user)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -53,7 +55,7 @@ export default class UserController implements Controller {
             const users = await this.userDao.getAll();
             response.send(users)
         } catch (error) {
-            return error
+            next(error)
         }
     }
 
@@ -63,6 +65,7 @@ export default class UserController implements Controller {
             response.send(updatedUser)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
@@ -72,10 +75,11 @@ export default class UserController implements Controller {
             response.send(isDeleted)
         } catch (error) {
             console.log(error)
+            next(error)
         }
     }
 
-    private getUserPledges = async (request:RequestWithUser, response: Response) => {
+    private getUserPledges = async (request:RequestWithUser, response: Response, next: NextFunction) => {
         const queryParams: requestQueryPagination = request.query;
         const page: number = parseInt(queryParams.page);
         const limit: number = parseInt(queryParams.limit);
@@ -84,10 +88,11 @@ export default class UserController implements Controller {
             response.send(userPledges)
         }catch(error){
             console.log(error);
+            next(error)
         }
     }
 
-    private getUserTransactionPayments = async (request:RequestWithUser, response: Response) => {
+    private getUserTransactionPayments = async (request:RequestWithUser, response: Response, next: NextFunction) => {
         const queryParams: requestQueryPagination = request.query;
         const page: number = parseInt(queryParams.page);
         const limit: number = parseInt(queryParams.limit);
@@ -96,10 +101,11 @@ export default class UserController implements Controller {
             response.send(userTransactionPayments)
         }catch(error){
             console.log(error);
+            next(error)
         }
     }
 
-    private getUserTransactionContributions = async (request:RequestWithUser, response: Response) => {
+    private getUserTransactionContributions = async (request:RequestWithUser, response: Response, next: NextFunction) => {
         const queryParams: requestQueryPagination = request.query;
         const page: number = parseInt(queryParams.page);
         const limit: number = parseInt(queryParams.limit);
@@ -108,6 +114,7 @@ export default class UserController implements Controller {
             response.send(userTransactionContributions)
         }catch(error){
             console.log(error);
+            next(error)
         }
     }
 }

@@ -38,10 +38,12 @@ export default class ContributionDao implements Dao{
     }
 
     public getAll = async(page: number, limit: number): Promise<Contribution[] | Error> => {
+        if(!page || !limit) throw new MissingParametersException();
         const contributionRepository = getConnection().getRepository(Contribution);
         try {
             const contributions = contributionRepository.createQueryBuilder("contribution")
             contributions.leftJoinAndSelect("contribution.contribution_transactions", "contribution_transactions")
+                .leftJoinAndSelect( 'contribution.campuses', 'campuses')
                 .take(limit)
                 .skip((page - 1)*limit)
             return await contributions.getMany();

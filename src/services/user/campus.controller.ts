@@ -29,6 +29,7 @@ class CampusController implements Controller {
             response.send(savedCampus);
         }catch(error){
             console.log(error)
+            next(error)
         }
         
     }
@@ -39,6 +40,7 @@ class CampusController implements Controller {
             response.send(campus);
         }catch(error){
             console.log(error)
+            next(error)
         }
         
     }
@@ -49,6 +51,7 @@ class CampusController implements Controller {
             response.send(campuses);
         }catch(error){
             console.log(error)
+            next(error)
         }
         
     }
@@ -59,6 +62,7 @@ class CampusController implements Controller {
             response.send(updatedCampus);
         }catch(error){
             console.log(error)
+            next(error)
         }
         
     }
@@ -69,6 +73,7 @@ class CampusController implements Controller {
             response.send(status);
         }catch(error){
             console.log(error)
+            next(error)
         }
         
     }
